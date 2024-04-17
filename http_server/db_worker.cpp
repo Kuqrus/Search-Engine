@@ -25,7 +25,7 @@ void DB_Worker::CountMatches(std::string& strRequest)
 
 	std::list<std::string> request;
 	boost::split(request, strRequest, boost::is_any_of("|"));
-	
+
 	try
 	{
 		for (const std::string& word : request) {

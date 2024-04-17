@@ -146,7 +146,13 @@ void HttpConnection::createResponsePost()
 		std::string key = s.substr(0, pos);
 		std::string value = s.substr(pos + 1);
 
+		std::cout << "here0\n";
+		system("pause");
+
 		std::string utf8value = convert_to_utf8(value);
+
+		std::cout << "here1\n";
+		system("pause");
 
 		if (key != "search")
 		{

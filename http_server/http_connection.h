@@ -5,7 +5,6 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio.hpp>
 
-#include "parser.h"
 #include "db_worker.h"
 
 namespace beast = boost::beast;

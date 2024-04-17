@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "http_connection.h"
+#include "parser.h"
 #include <Windows.h>
 
 
