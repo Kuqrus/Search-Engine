@@ -229,7 +229,7 @@ void parseHref(const Link& HomeLink, std::vector<Link>& links, std::string& inpu
 		}
 		iter++;
 
-		if (links.size() > 50) {
+		if (links.size() > 10) {
 			iter = end;
 			continue;
 		}

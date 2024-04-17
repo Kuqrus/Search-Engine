@@ -27,6 +27,7 @@ void CollectContent(std::string& url, std::string& html, pqxx::connection& dbCon
 
 	// Строка для хранения слов
 	std::string DataToAppend = " ";
+	std::map<std::string, int> Words;
 
 	// Читаем слова из строки и записываем их в вектор
 	std::string word;
@@ -45,9 +46,12 @@ void CollectContent(std::string& url, std::string& html, pqxx::connection& dbCon
 		// Удаляем знаки препинания
 		lowerWord.erase(std::remove_if(lowerWord.begin(), lowerWord.end(), [](char c) {
 			return std::ispunct(c, std::locale());
-			}), lowerWord.end());
+			}), lowerWord.end());		
 
 		DataToAppend += lowerWord + " ";
+
+		if (Words.count(lowerWord)) Words[lowerWord]++;
+		else Words[lowerWord] = 1;
 	}
 
 	ViewedLinks.insert(url);
@@ -68,6 +72,12 @@ void CollectContent(std::string& url, std::string& html, pqxx::connection& dbCon
 	pqxx::work addData(dbConn);
 	addData.exec("INSERT INTO data (link_id, data) VALUES (" + CurrentUrlId + ", '" + DataToAppend + "')");
 	addData.commit();
+
+	for (const auto& w : Words) {
+		pqxx::work addWord(dbConn);
+		addWord.exec("INSERT INTO words (link_id, word, count) VALUES (" + CurrentUrlId + ", '" + w.first + "','" + std::to_string(w.second) + "')");
+		addWord.commit();
+	}
 }
 
 void threadPoolWorker() {
@@ -130,6 +140,7 @@ void parseLink(const Link& CurrentLink, int depth, pqxx::connection& dbConn)
 
 int main()
 {	
+	setlocale(LC_ALL, "rus");
 
 	try {
 		std::string ParamsForDBConnection;
@@ -157,6 +168,13 @@ int main()
 			"id serial primary key, "
 			"link_id INT REFERENCES links(id),"
 			"data text not null"
+			");"
+		);
+		start.exec("create table if not exists words("
+			"id serial primary key, "
+			"link_id INT REFERENCES links(id),"
+			"word text not null,"
+			"count int not null"
 			");"
 		);
 		start.commit();

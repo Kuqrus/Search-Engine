@@ -6,7 +6,8 @@ add_executable(HttpServerApp
 	main.cpp
 	http_connection.h
 	http_connection.cpp
-	)
+	db_worker.cpp
+	db_worker.h)
 
 target_compile_features(HttpServerApp PRIVATE cxx_std_17) 
 
